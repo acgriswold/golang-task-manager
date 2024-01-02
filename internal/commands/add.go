@@ -1,8 +1,6 @@
 package commands
 
 import (
-	"fmt"
-
 	"github.com/acgriswold/golang-task-manager/internal/db"
 	"github.com/spf13/cobra"
 )
@@ -20,8 +18,14 @@ var add = &cobra.Command{
 
 		defer t.Db.Close()
 
-		fmt.Printf("Adding task \"%s\"", args[0])
-		fmt.Println()
+		project, err := cmd.Flags().GetString("project")
+		if err != nil {
+			return err
+		}
+
+		if err := t.Tasks.Insert(t.Db, args[0], project); err != nil {
+			return err
+		}
 
 		return nil
 	},

@@ -3,9 +3,9 @@ package tables
 type status int
 
 const (
-	todo status = iota
-	inProgress
-	done
+	Todo status = iota
+	InProgress
+	Done
 )
 
 func (s status) String() string {
@@ -13,15 +13,15 @@ func (s status) String() string {
 }
 
 func (s status) Next() int {
-	if s == done {
-		return int(todo)
+	if s == Done {
+		return int(Todo)
 	}
 	return int(s + 1)
 }
 
 func (s status) Previous() int {
-	if s == todo {
-		return int(done)
+	if s == Todo {
+		return int(Done)
 	}
 
 	return int(s - 1)
