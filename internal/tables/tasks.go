@@ -48,7 +48,7 @@ func (t *TasksTable) Update(db *sql.DB, task Task) error {
 
 	original.merge(task)
 	_, err = db.Exec(
-		"UPDATE tasks SET name = ?, project = ?, status = ?, WHERE id = ?",
+		"UPDATE tasks SET name = ?, project = ?, status = ? WHERE id = ?",
 		original.Name,
 		original.Project,
 		original.Status,
