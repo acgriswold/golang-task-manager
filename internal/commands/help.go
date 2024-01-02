@@ -19,4 +19,7 @@ func init() {
 	*/
 
 	Help.AddCommand(add)
+	Help.AddCommand(delete)
+	Help.AddCommand(update)
+	Help.AddCommand(list)
 }

@@ -30,7 +30,7 @@ func (t *TasksTable) Insert(db *sql.DB, name, project string) error {
 	return err
 }
 
-func (t *TasksTable) Delete(db *sql.DB, id string) error {
+func (t *TasksTable) Delete(db *sql.DB, id uint) error {
 	_, err := db.Exec(
 		"DELETE FROM tasks WHERE id = ?",
 		id,
@@ -39,7 +39,7 @@ func (t *TasksTable) Delete(db *sql.DB, id string) error {
 	return err
 }
 
-func (t *TasksTable) Update(db *sql.DB, task task) error {
+func (t *TasksTable) Update(db *sql.DB, task Task) error {
 	original, err := t.getTask(db, task.ID)
 
 	if err != nil {
@@ -58,8 +58,8 @@ func (t *TasksTable) Update(db *sql.DB, task task) error {
 	return err
 }
 
-func (t *TasksTable) getAll(db *sql.DB) ([]task, error) {
-	var tasks []task
+func (t *TasksTable) GetAll(db *sql.DB) ([]Task, error) {
+	var tasks []Task
 	rows, err := db.Query("SELECT * from tasks")
 
 	if err != nil {
@@ -67,7 +67,7 @@ func (t *TasksTable) getAll(db *sql.DB) ([]task, error) {
 	}
 
 	for rows.Next() {
-		var task task
+		var task Task
 		err = rows.Scan(
 			&task.ID,
 			&task.Name,
@@ -86,8 +86,8 @@ func (t *TasksTable) getAll(db *sql.DB) ([]task, error) {
 	return tasks, err
 }
 
-func (t *TasksTable) getByStatus(db *sql.DB, status string) ([]task, error) {
-	var tasks []task
+func (t *TasksTable) GetByStatus(db *sql.DB, status string) ([]Task, error) {
+	var tasks []Task
 	rows, err := db.Query("SELECT * from tasks WHERE status = ?", status)
 
 	if err != nil {
@@ -95,7 +95,7 @@ func (t *TasksTable) getByStatus(db *sql.DB, status string) ([]task, error) {
 	}
 
 	for rows.Next() {
-		var task task
+		var task Task
 		err = rows.Scan(
 			&task.ID,
 			&task.Name,
@@ -114,8 +114,8 @@ func (t *TasksTable) getByStatus(db *sql.DB, status string) ([]task, error) {
 	return tasks, err
 }
 
-func (t *TasksTable) getTask(db *sql.DB, id uint) (task, error) {
-	var task task
+func (t *TasksTable) getTask(db *sql.DB, id uint) (Task, error) {
+	var task Task
 
 	err := db.QueryRow("SELECT * FROM tasks WHERE id = ?", id).Scan(
 		&task.ID,
@@ -128,7 +128,7 @@ func (t *TasksTable) getTask(db *sql.DB, id uint) (task, error) {
 	return task, err
 }
 
-type task struct {
+type Task struct {
 	ID      uint
 	Name    string
 	Project string
@@ -136,19 +136,19 @@ type task struct {
 	Created time.Time
 }
 
-func (t task) FilterValue() string {
+func (t Task) FilterValue() string {
 	return t.Name
 }
 
-func (t task) Title() string {
+func (t Task) Title() string {
 	return t.Name
 }
 
-func (t task) Description() string {
+func (t Task) Description() string {
 	return t.Project
 }
 
-func (original *task) merge(t task) {
+func (original *Task) merge(t Task) {
 	uValues := reflect.ValueOf(&t).Elem()
 	oValues := reflect.ValueOf(original).Elem()
 
